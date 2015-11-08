@@ -1,0 +1,16 @@
+body {
+  padding:10px;
+}
+
+.form-control.ng-invalid.ng-touched {
+	border:1px solid #f00;
+}
+
+#warning {
+	color: #f00;
+}
+
+img {
+	height: 25%;
+	width: 25%;
+}
