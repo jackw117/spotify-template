@@ -1,3 +1,6 @@
+/* The javascript file for the Spotify Challenge that uses angular to retrieve
+data from the Spotify API */
+
 var data;
 var artistSearch = 'https://api.spotify.com/v1/search?type=artist&query=';
 var artistGet = 'https://api.spotify.com/v1/artists/';
@@ -12,6 +15,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.number = offsetNum;
   $scope.search = true;
   
+  //gets artists with names that match what the user inputs
   $scope.getArtists = function(num) {
     $http.get(artistSearch + $scope.track + offsetUrl + num).success(function(response){
       $scope.data = $scope.artists = response.artists.items;
@@ -25,6 +29,8 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     });
   }
 
+  //gets the top songs of a given artist, and randomly picks two of them as options
+  //for songs to play
   $scope.getTopSongs = function(id) {
     $scope.artists = null;
     $scope.search = false;
@@ -51,12 +57,15 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     });
   }
 
+  //picks a random song from the two options to play
   $scope.pickSong = function() {
     var random = Math.floor(Math.random() * $scope.songOptions.length);
     $scope.playSong = $scope.songOptions[random];
     console.log($scope.songOptions[random].preview_url);
   }
 
+  //checks for repeats in songOptions, and then calls checkUndefined to delete
+  //anything that is undefined
   var checkRepeats = function() {
     for (var i = 0; i < $scope.songOptions.length; i++) {
       for (var j = 0; j < $scope.songOptions.length; j++) {
@@ -72,6 +81,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     checkUndefined();
   }
 
+  //deletes any undefined elements in songOptions
   var checkUndefined = function() {
     for (var i = 0; i < $scope.songOptions.length; i++) {
       if ($scope.songOptions[i] == undefined) {
@@ -80,6 +90,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     }
   }
 
+  //checks to see if the user's guess matches the song playing
   $scope.checkGuess = function(name) {
     if (name === $scope.playSong.name) {
       $scope.success = true;
@@ -90,6 +101,8 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     }
   }
 
+  //gets the related artists of a current one, and then calls getTopSongs, passing
+  //in the id of a random related artist
   $scope.getRelatedArtists = function(id) {
     $http.get(artistGet + id + '/related-artists').success(function(response){
       var random = Math.floor(Math.random() * response.artists.length);
@@ -97,6 +110,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     });
   }
 
+  //plays a song
   $scope.play = function(song) {
     if($scope.currentSong == song) {
       $scope.audioObject.pause();
@@ -110,7 +124,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
       $scope.currentSong = song;
     }
   }
-
+  //displays the next 20 artists
   $scope.more = function() {
     offsetNum += 20;
     $scope.number = offsetNum;
@@ -118,6 +132,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     $scope.getArtists(offsetNum);
   }
 
+  //displays the 20 previous artists
   $scope.previous = function() {
     offsetNum -= 20;
     $scope.number = offsetNum;
@@ -125,17 +140,14 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     $scope.getArtists(offsetNum);
   }
 
+  //resets the offset number, making it so the first 20 artists are displayed
   $scope.reset = function() {
     offsetNum = 0;
     $scope.number = offsetNum;
   }
 
+  //plays the song as soon as one has been chosen
   $scope.$watch('playSong', function(){
     $scope.play($scope.playSong.preview_url);
   });
-});
-
-// Add tool tips to anything with a title property
-$('body').tooltip({
-    selector: '[title]'
 });
