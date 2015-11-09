@@ -20,6 +20,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
       $scope.artistsLeft = [];
       $scope.artistsRight = [];
       var even = true;
+      $scope.badName = false;
       for (var i = 0; i < response.artists.items.length; i++) {
         if (even) {
           $scope.artistsLeft.push(response.artists.items[i]);
@@ -27,6 +28,9 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
           $scope.artistsRight.push(response.artists.items[i]);
         }
         even = !even;
+      }
+      if (response.artists.total == 0) {
+        $scope.badName = true;
       }
       $scope.songOptions = [];
       $scope.success = false;

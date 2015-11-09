@@ -67,10 +67,11 @@
 			</div>
 
 			<!-- Shows up only if the top songs from an artist are unavailable in the specified country, or if an artist has no related artists -->
-			<div ng-show="notAvailable || noRelated" class="container" id="notAvailable">
+			<div ng-show="notAvailable || noRelated || badName" class="container" id="notAvailable">
 				<h1 ng-show="notAvailable">This artist's songs are not available in the country you specified.</h1>
 				<h1 ng-show="noRelated">This artist has no related artists.</h1>
-				<button class="btn btn-primary" type="submit" ng-click="notAvailable = false; search = true; noRelated = false">Back to Search</button>
+				<h1 ng-show="badName">No artists were found with the name: <b>{{track}}</b></h1>
+				<button class="btn btn-primary" type="submit" ng-click="notAvailable = false; search = true; noRelated = false; badName = falses">Back to Search</button>
 			</div>
 			
 			<!-- Shows up when a song is playing, and allows the user to guess which song it is. It then gives the option for the user to listen to another song by the artist(s) that sang the previous one, or listen to a song by related artists. -->
