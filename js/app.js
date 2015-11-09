@@ -10,39 +10,44 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.songOptions = [];
   $scope.audioObject = {};
   $scope.number = offsetNum;
+  $scope.search = true;
+  
   $scope.getArtists = function(num) {
     $http.get(artistSearch + $scope.track + offsetUrl + num).success(function(response){
       $scope.data = $scope.artists = response.artists.items;
+      console.log($scope.data.length);
       $scope.songOptions = [];
       $scope.success = false;
-      $scope.search = true;
-      //fix no-image
-      /*if (data.images == undefined) {
-        $scope.artists.images = new {height:300, url:"img/noPhoto-icon.png", width:300}
-      }*/
+      $scope.search = false;
+      $scope.fail = false;
+      $scope.playSong = null;
+      $scope.notAvailable = false;
     });
   }
 
   $scope.getTopSongs = function(id) {
     $scope.artists = null;
+    $scope.search = false;
     $scope.success = false;
+    $scope.fail = false;
+    $scope.notAvailable = false;
     console.log(id);
     $scope.artistID = id;
     $scope.songOptions = [];
     $http.get(artistGet + id + '/top-tracks?country=' + $scope.country).success(function(response){
-      if (response.tracks.length == 0) {
-        alert('not available in your country');
-      } else {
-        if (response.tracks.length >=2) {
-          for (var i = 0; i < 2; i++) {
-            var random = Math.floor(Math.random() * response.tracks.length);
-            $scope.songOptions.push(response.tracks[random]);       
-          }
+      if (response.tracks.length >=2) {
+        for (var i = 0; i < 2; i++) {
+          var random = Math.floor(Math.random() * response.tracks.length);
+          $scope.songOptions.push(response.tracks[random]);       
         }
         checkRepeats();
         console.log($scope.songOptions);
         $scope.pickSong();
+      } else {
+        $scope.notAvailable = true;
       }
+    }).error(function() {
+      $scope.notAvailable = true;
     });
   }
 
@@ -51,61 +56,6 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     $scope.playSong = $scope.songOptions[random];
     console.log($scope.songOptions[random].preview_url);
   }
-
-  /*$scope.getAlbums = function(id) {
-    $scope.artists = null;
-    $scope.songOptions = [];
-    $scope.artistID = id;
-    $http.get(artistGet + id + '/albums').success(function(response){  
-      $scope.total = response.total;
-      console.log(id);
-      //random is THE SAME random I think
-      var randoms = [];
-      if (response.total >= 4) {
-        for (var i = 0; i < 4; i++) {
-          var random = Math.floor(Math.random() * $scope.total);
-          $scope.getAnAlbum(random, id);
-        }
-      } else {
-        for (var i = 0; i < response.total; i++) {
-          var random = Math.floor(Math.random() * $scope.total);
-          $scope.getAnAlbum(random, id);        
-        }
-      }
-    });
-  }*/
-
-  /*$scope.getAnAlbum = function(num, id) {
-    $http.get(artistGet + id + '/albums?limit=1&offset=' + num).success(function(response){
-      console.log(response);
-      $scope.getSongs(response.items[0].id);
-    });
-  }*/
-
-  /*$scope.getSongs = function(id) {
-    $http.get(albumGet + id + '/tracks').success(function(response){
-      console.log(id);
-      console.log(response.items);
-      $scope.getASong(response.items);
-    });
-  }*/
-
-  /*$scope.getASong = function(data) {
-    
-    var songArr = [];
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].artists[0].name === $scope.name) {
-        songArr.push(data[i].artists.name);
-      }
-    }
-    var random = Math.floor(Math.random() * songArr.length);
-    $scope.songOptions.push(songArr[random]);
-    checkRepeats();
-    console.log($scope.songOptions);
-    //right now, it always places the correct one last
-    $scope.playSong = data[random].preview_url;
-    //$scope.play($scope.playSong);
-  }*/
 
   var checkRepeats = function() {
     for (var i = 0; i < $scope.songOptions.length; i++) {
@@ -132,9 +82,11 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
 
   $scope.checkGuess = function(name) {
     if (name === $scope.playSong.name) {
-      console.log(name);
-      console.log($scope.playSong.name);
       $scope.success = true;
+      $scope.fail = false;
+    } else {
+      $scope.fail = true;
+      $scope.success = false;
     }
   }
 
@@ -144,25 +96,6 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
       $scope.getTopSongs(response.artists[random].id);
     });
   }
-
-  /*function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex ;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  }*/
 
   $scope.play = function(song) {
     if($scope.currentSong == song) {
@@ -196,6 +129,10 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     offsetNum = 0;
     $scope.number = offsetNum;
   }
+
+  $scope.$watch('playSong', function(){
+    $scope.play($scope.playSong.preview_url);
+  });
 });
 
 // Add tool tips to anything with a title property

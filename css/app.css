@@ -6,6 +6,18 @@ body {
 	border:1px solid #f00;
 }
 
+#artistList {
+	list-style-type: none;
+}
+
+.artistList {
+	margin-top: 5em;
+}
+
+.artistPic {
+	display: block;
+}
+
 #warning {
 	color: #f00;
 }
@@ -13,4 +25,29 @@ body {
 img {
 	height: 25%;
 	width: 25%;
+}
+
+.artistName {
+	font-weight: bold;
+}
+
+.guessButton {
+	width: 50%;
+	height: 100px;
+}
+
+h1 {
+	text-align: center;
+}
+
+#playAgain {
+	margin-top: 20px;
+}
+
+#notAvailable {
+	text-align: center;
+}
+
+button {
+	white-space: normal;
 }

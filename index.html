@@ -23,53 +23,60 @@
 
 	<body>
 		<!-- Initiate app -->
-		<div ng-app="myApp" ng-controller="myCtrl">
-			<div>
-				<!-- Form -->
-				<form class="container" name="songForm" ng-hide="search">
-					<div class="form-group">
-						<label>Artist search:</label>
-						<input name="search" placeholder="Enter an artist name..." ng-model="track" required class="form-control"></input>
-						<p id="warning" ng-show="songForm.search.$invalid && songForm.search.$touched">Please enter an artist name.</p>
-						<label>Enter the abbreviation for your country:</label>
-						<input name="country" placeholder="US, MX, FR, etc..." ng-model="country" required class="form-control" ng-maxlength="2" ng-minlength="2">
-						<p id="warning" ng-show="songForm.country.$invalid && songForm.country.$touched">Please enter a proper abbreviation for your country.</p>
-					</div>
-					<div class="form-group">
-						<button ng-disabled="songForm.$invalid" class="btn btn-primary" ng-click="getArtists(0); reset()" type="submit">Search</button>
-					</div>
-				</form>
-				
-				<!-- Results -->
-				<div ng-show="artists" class="container-fixed">
-					<h2>Click on an image to select the artist.</h2>
-					<div class="help-block">
-						<span ng-show="currentSong && !audioObject.paused">(playing)</span>
-					</div>
-					<ul>
-						<li ng-repeat="artist in artists">
-							<p ng-model="name">{{artist.name}}</p>
-							<img ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
-						</li>
-					</ul>
-					<button type="submit" ng-show="number>19" ng-click="previous()">Previous</button>
-					<button type="submit" ng-show="data.length==20" ng-click="more()">Next</button>
+		<div ng-app="myApp" ng-controller="myCtrl">		
+			<!-- Form -->
+			<form class="container" name="songForm" ng-hide="!search">
+				<div class="form-group">
+					<h1>Artist Search</h1>
+					<input name="search" placeholder="Enter an artist name..." ng-model="track" required class="form-control"></input>
+					<p id="warning" ng-show="songForm.search.$invalid && songForm.search.$touched">Please enter an artist name.</p>
+					<label>Enter the abbreviation for your country:</label>
+					<input name="country" placeholder="US, MX, FR, etc..." ng-model="country" required class="form-control" ng-maxlength="2" ng-minlength="2">
+					<p id="warning" ng-show="songForm.country.$invalid && songForm.country.$touched">Please enter a proper abbreviation for your country.</p>
 				</div>
-
-				<div ng-show="playSong" class="container-fixed">
-					<button type="submit" ng-click="play(playSong.preview_url)">Play Song</button><br>
-					<label>Guess the song:</label>
-					<button type="submit" ng-click="checkGuess(song.name)" ng-model="song" ng-repeat="song in songOptions">{{song.name}}</button><br>
-					<div ng-show="success">
-						<h3>Correct!</h3>
-						<p>That song was {{playSong.name}}, by </p>
-						<p ng-repeat="name in playSong.artists">{{name.name}}</p>
-						<img src="{{playSong.album.images[0].url}}">
-					</div>
-					<button type="submit" ng-click="getTopSongs(artistID)">Try again with same artist?</button>
-					<button type="submit" ng-click="getRelatedArtists(artistID)">Try again with a similar artist?</button>
+				<div class="form-group">
+					<button class="btn btn-primary" ng-disabled="songForm.$invalid" class="btn btn-primary" ng-click="getArtists(0); reset()" type="submit">Search</button>
 				</div>
+			</form>
+			
+			<!-- Results -->
+			
+			<div ng-show="artists && search == false && notAvailable == false" class="container">
+				<h1>Click on an image to select the artist.</h1>
+				<ul id="artistList">
+					<li class="artistList" ng-repeat="artist in artists">
+						<label for="{{artist.name}}" ng-click="getTopSongs(artist.id)" ng-model="name">{{artist.name}}</label>
+						<img ng-show="{{artist.images[0]}}" id="{{artist.name}}" class="artistPic" ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
+						<img id="{{artist.name}}" class="artistPic" ng-show="{{artist.images[0] === undefined}}" ng-click="getTopSongs(artist.id)" src="img/No_Image_Available.png"></img>
+					</li>
+				</ul>
+				<button class="btn btn-primary" type="submit" ng-show="number>19" ng-click="previous()">Previous</button>
+				<button class="btn btn-primary" type="submit" ng-show="data.length==20" ng-click="more()">Next</button>
+				<button class="btn btn-primary" type="submit" ng-click="search = true">Back to Search</button>
 			</div>
+
+			<div ng-show="notAvailable" class="container" id="notAvailable">
+				<h1>This artist's songs are not available in the country you specified.</h1>
+				<button class="btn btn-primary" type="submit" ng-click="notAvailable = false; search = true">Back to Search</button>
+			</div>
+			
+			<div ng-show="playSong && search == false" class="container">
+				<h1>Guess the Song</h1>
+				<button class="guessButton btn btn-primary" type="submit" ng-click="checkGuess(song.name)" ng-model="song" ng-repeat="song in songOptions">{{song.name}}</button><br>
+				<button id="playAgain" class="btn btn-info" type="submit" ng-click="play(playSong.preview_url); play(playSong.preview_url)">Play Again</button>
+				<div ng-show="success || fail">
+					<h2 ng-show="success">Correct!</h2>
+					<h2 ng-show="fail">Sorry...</h2>
+					<p>That song was {{playSong.name}}, by: </p>
+					<ul>
+						<li class="artistName" ng-repeat="name in playSong.artists" ng-click="getTopSongs(name.id); play(playSong.preview_url)">{{name.name}}</li>
+					</ul>	
+					<p>(Click an artist's name to hear another song by that artist)</p>
+					<img src="{{playSong.album.images[0].url}}">
+				</div>
+				<button class="btn btn-primary" type="submit" ng-click="getRelatedArtists(artistID); play(playSong.preview_url)" ng-show="success || fail">Try again with a similar artist</button>
+				<button class="btn btn-primary" type="submit" ng-click="search = true; play(playSong.preview_url)" ng-show="success || fail">Back to Search</button>
+			</div>	
 		</div>
 	</body>
 </html>
