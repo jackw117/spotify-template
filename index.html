@@ -26,7 +26,7 @@
 	<body>
 		<!-- Initiate app -->
 		<div ng-app="myApp" ng-controller="myCtrl">		
-			<!-- Form where a user enters the name of an artist, and the country the user lives in -->
+			<!-- Form where a user enters the name of an artist, and the user's country, to search for a specific artist -->
 			<form class="container" name="songForm" ng-hide="!search">
 				<div class="form-group">
 					<h1>Spotify Trivia</h1>
@@ -43,24 +43,34 @@
 			</form>
 			
 			<!-- Displays the artists retrieved from the input -->
-			<div ng-show="artists && search == false && notAvailable == false" class="container">
+			<div ng-show="artistsLeft.length > 0 && search == false && notAvailable == false" class="container">
 				<h1>Click on an image to select the artist.</h1>
-				<ul id="artistList">
-					<li class="artistList" ng-repeat="artist in artists">
+				<div class="col-xs-6">
+					<li class="artistList" ng-repeat="artist in artistsLeft">
 						<label for="{{artist.name}}" ng-click="getTopSongs(artist.id)" ng-model="name">{{artist.name}}</label>
 						<img ng-show="{{artist.images[0]}}" id="{{artist.name}}" class="artistPic" ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
 						<img id="{{artist.name}}" class="artistPic" ng-show="{{artist.images[0] === undefined}}" ng-click="getTopSongs(artist.id)" src="img/No_Image_Available.png"></img>
 					</li>
-				</ul>
-				<button class="btn btn-primary" type="submit" ng-show="number>19" ng-click="previous()">Previous</button>
-				<button class="btn btn-primary" type="submit" ng-show="data.length==20" ng-click="more()">Next</button>
-				<button class="btn btn-primary" type="submit" ng-click="search = true">Back to Search</button>
+				</div>
+				<div class="col-xs-6">
+					<li class="artistList" ng-repeat="artist in artistsRight">
+						<label for="{{artist.name}}" ng-click="getTopSongs(artist.id)" ng-model="name">{{artist.name}}</label>
+						<img ng-show="{{artist.images[0]}}" id="{{artist.name}}" class="artistPic" ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
+						<img id="{{artist.name}}" class="artistPic" ng-show="{{artist.images[0] === undefined}}" ng-click="getTopSongs(artist.id)" src="img/No_Image_Available.png"></img>
+					</li>
+				</div>
+				<div id="offsetDiv" class="col-xs-12">
+					<button class="btn btn-primary" type="submit" ng-show="number>19" ng-click="previous()">Previous</button>
+					<button class="btn btn-primary" type="submit" ng-show="artistsRight.length==10" ng-click="more()">Next</button>
+					<button class="btn btn-primary" type="submit" ng-click="search = true">Back to Search</button>
+				</div>
 			</div>
 
-			<!-- Shows up only if the top songs from an artist are unavailable in the specified country -->
-			<div ng-show="notAvailable" class="container" id="notAvailable">
-				<h1>This artist's songs are not available in the country you specified.</h1>
-				<button class="btn btn-primary col-sm-3" type="submit" ng-click="notAvailable = false; search = true">Back to Search</button>
+			<!-- Shows up only if the top songs from an artist are unavailable in the specified country, or if an artist has no related artists -->
+			<div ng-show="notAvailable || noRelated" class="container" id="notAvailable">
+				<h1 ng-show="notAvailable">This artist's songs are not available in the country you specified.</h1>
+				<h1 ng-show="noRelated">This artist has no related artists.</h1>
+				<button class="btn btn-primary" type="submit" ng-click="notAvailable = false; search = true; noRelated = false">Back to Search</button>
 			</div>
 			
 			<!-- Shows up when a song is playing, and allows the user to guess which song it is. It then gives the option for the user to listen to another song by the artist(s) that sang the previous one, or listen to a song by related artists. -->

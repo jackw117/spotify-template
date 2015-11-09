@@ -1,7 +1,6 @@
 /* The javascript file for the Spotify Challenge that uses angular to retrieve
 data from the Spotify API */
 
-var data;
 var artistSearch = 'https://api.spotify.com/v1/search?type=artist&query=';
 var artistGet = 'https://api.spotify.com/v1/artists/';
 var albumGet = 'https://api.spotify.com/v1/albums/';
@@ -18,28 +17,38 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   //gets artists with names that match what the user inputs
   $scope.getArtists = function(num) {
     $http.get(artistSearch + $scope.track + offsetUrl + num).success(function(response){
-      $scope.data = $scope.artists = response.artists.items;
-      console.log($scope.data.length);
+      $scope.artistsLeft = [];
+      $scope.artistsRight = [];
+      var even = true;
+      for (var i = 0; i < response.artists.items.length; i++) {
+        if (even) {
+          $scope.artistsLeft.push(response.artists.items[i]);
+        } else {
+          $scope.artistsRight.push(response.artists.items[i]);
+        }
+        even = !even;
+      }
       $scope.songOptions = [];
       $scope.success = false;
       $scope.search = false;
       $scope.fail = false;
       $scope.playSong = null;
       $scope.notAvailable = false;
+      $scope.noRelated = false;
     });
   }
 
   //gets the top songs of a given artist, and randomly picks two of them as options
   //for songs to play
   $scope.getTopSongs = function(id) {
-    $scope.artists = null;
     $scope.search = false;
     $scope.success = false;
     $scope.fail = false;
     $scope.notAvailable = false;
-    console.log(id);
     $scope.artistID = id;
     $scope.songOptions = [];
+    $scope.artistsLeft = [];
+    $scope.artistsRight = [];
     $http.get(artistGet + id + '/top-tracks?country=' + $scope.country).success(function(response){
       if (response.tracks.length >=2) {
         for (var i = 0; i < 2; i++) {
@@ -47,7 +56,6 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
           $scope.songOptions.push(response.tracks[random]);       
         }
         checkRepeats();
-        console.log($scope.songOptions);
         $scope.pickSong();
       } else {
         $scope.notAvailable = true;
@@ -61,7 +69,6 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.pickSong = function() {
     var random = Math.floor(Math.random() * $scope.songOptions.length);
     $scope.playSong = $scope.songOptions[random];
-    console.log($scope.songOptions[random].preview_url);
   }
 
   //checks for repeats in songOptions, and then calls checkUndefined to delete
@@ -105,8 +112,13 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   //in the id of a random related artist
   $scope.getRelatedArtists = function(id) {
     $http.get(artistGet + id + '/related-artists').success(function(response){
-      var random = Math.floor(Math.random() * response.artists.length);
-      $scope.getTopSongs(response.artists[random].id);
+      if (response.artists.length > 0) {
+        var random = Math.floor(Math.random() * response.artists.length);
+        $scope.getTopSongs(response.artists[random].id);      
+      } else {
+        $scope.noRelated = true;
+        $scope.playSong = null;
+      }
     });
   }
 
@@ -128,7 +140,8 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.more = function() {
     offsetNum += 20;
     $scope.number = offsetNum;
-    $scope.artists = null;
+    $scope.artistsLeft = [];
+    $scope.artistsRight = [];
     $scope.getArtists(offsetNum);
   }
 
@@ -136,7 +149,8 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.previous = function() {
     offsetNum -= 20;
     $scope.number = offsetNum;
-    $scope.artists = null;
+    $scope.artistsLeft = [];
+    $scope.artistsRight = [];
     $scope.getArtists(offsetNum);
   }
 
