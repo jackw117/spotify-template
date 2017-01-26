@@ -33,9 +33,6 @@
 					<label for="search">Artist Search:</label>
 					<input id="search" name="search" placeholder="Enter an artist name..." ng-model="track" required class="form-control"></input>
 					<p id="warning" ng-show="songForm.search.$invalid && songForm.search.$touched">Please enter an artist name.</p>
-					<label for="country">Enter the abbreviation for your country:</label>
-					<input id="country" name="country" placeholder="US, MX, FR, etc..." ng-model="country" required class="form-control" ng-maxlength="2" ng-minlength="2">
-					<p id="warning" ng-show="songForm.country.$invalid && songForm.country.$touched">Please enter a proper abbreviation for your country.</p>
 				</div>
 				<div class="form-group">
 					<button class="btn btn-primary" ng-disabled="songForm.$invalid" class="btn btn-primary" ng-click="getArtists(0); reset()" type="submit">Search</button>
