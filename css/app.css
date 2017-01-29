@@ -84,9 +84,23 @@ label {
 	text-align: center;
 }
 
+.frame {
+    height: 400px;
+    width: 50%;
+    white-space: nowrap;
+    
+    text-align: center; margin: 1em 0;
+}
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
 #albumPic {
-	margin-top: 20px;
-	width: 75%;
+	vertical-align: middle;
+    max-height: 400px;
 }
 
 .singleArtist {

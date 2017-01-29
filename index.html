@@ -87,7 +87,9 @@
 						<li class="artistName" ng-repeat="name in playSong.artists" ng-click="getTopSongs(name.id); play(playSong.preview_url)">{{name.name}}</li>
 					</ul>	
 					<p>(Click an artist's name to hear another song by that artist)</p>
-					<img id="albumPic" src="{{playSong.album.images[0].url}}">
+					<div class="frame">
+						<span class="helper"></span><img id="albumPic" src="{{playSong.album.images[0].url}}">
+					</div>
 				</div>
 			</div>	
 		</div>
