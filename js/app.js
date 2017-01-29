@@ -17,17 +17,10 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   //gets artists with names that match what the user inputs
   $scope.getArtists = function(num) {
     $http.get(artistSearch + $scope.track + offsetUrl + num).success(function(response){
-      $scope.artistsLeft = [];
-      $scope.artistsRight = [];
-      var even = true;
+      $scope.artists = [];
       $scope.badName = false;
       for (var i = 0; i < response.artists.items.length; i++) {
-        if (even) {
-          $scope.artistsLeft.push(response.artists.items[i]);
-        } else {
-          $scope.artistsRight.push(response.artists.items[i]);
-        }
-        even = !even;
+        $scope.artists.push(response.artists.items[i]);
       }
       if (response.artists.total == 0) {
         $scope.badName = true;
@@ -51,8 +44,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
     $scope.notAvailable = false;
     $scope.artistID = id;
     $scope.songOptions = [];
-    $scope.artistsLeft = [];
-    $scope.artistsRight = [];
+    $scope.artists = [];
     $http.get(artistGet + id + '/top-tracks?country=US').success(function(response){
       if (response.tracks.length >=2) {
         for (var i = 0; i < 2; i++) {
@@ -144,8 +136,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.more = function() {
     offsetNum += 20;
     $scope.number = offsetNum;
-    $scope.artistsLeft = [];
-    $scope.artistsRight = [];
+    $scope.artists = [];
     $scope.getArtists(offsetNum);
   }
 
@@ -153,8 +144,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
   $scope.previous = function() {
     offsetNum -= 20;
     $scope.number = offsetNum;
-    $scope.artistsLeft = [];
-    $scope.artistsRight = [];
+    $scope.artists = [];
     $scope.getArtists(offsetNum);
   }
 

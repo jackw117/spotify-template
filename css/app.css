@@ -22,6 +22,7 @@ li {
 
 .artistPic {
 	display: block;
+	max-height: 100px;
 	width: 100%;
 }
 
@@ -30,7 +31,7 @@ li {
 }
 
 img {
-	width: 100%;
+	width: 50%;
 }
 
 .artistName {

@@ -42,15 +42,8 @@
 			<!-- Displays the artists retrieved from the input -->
 			<div ng-show="artistsLeft.length > 0 && search == false && notAvailable == false" class="container">
 				<h1>Click on an image to select the artist.</h1>
-				<div class="col-xs-6">
-					<li class="artistList" ng-repeat="artist in artistsLeft">
-						<label for="{{artist.name}}" ng-click="getTopSongs(artist.id)" ng-model="name">{{artist.name}}</label>
-						<img ng-show="{{artist.images[0]}}" id="{{artist.name}}" class="artistPic" ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
-						<img id="{{artist.name}}" class="artistPic" ng-show="{{artist.images[0] === undefined}}" ng-click="getTopSongs(artist.id)" src="img/No_Image_Available.png"></img>
-					</li>
-				</div>
-				<div class="col-xs-6">
-					<li class="artistList" ng-repeat="artist in artistsRight">
+				<div class="col-xs-12">
+					<li class="artistList" ng-repeat="artist in artists">
 						<label for="{{artist.name}}" ng-click="getTopSongs(artist.id)" ng-model="name">{{artist.name}}</label>
 						<img ng-show="{{artist.images[0]}}" id="{{artist.name}}" class="artistPic" ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
 						<img id="{{artist.name}}" class="artistPic" ng-show="{{artist.images[0] === undefined}}" ng-click="getTopSongs(artist.id)" src="img/No_Image_Available.png"></img>
