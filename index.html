@@ -42,7 +42,7 @@
 			<!-- Displays the artists retrieved from the input -->
 			<div ng-show="artists.length > 0 && search == false && notAvailable == false" class="container">
 				<h1>Click on an image to select the artist.</h1>
-				<div class="col-xs-12" ng-repeat="artist in artists">
+				<div class="artistDiv" ng-repeat="artist in artists">
 					<li class="artistList">
 						<img ng-show="{{artist.images[0]}}" id="{{artist.name}}" class="artistPic" ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
 						<img id="{{artist.name}}" class="artistPic" ng-show="{{artist.images[0] === undefined}}" ng-click="getTopSongs(artist.id)" src="img/No_Image_Available.png"></img>
