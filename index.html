@@ -40,7 +40,7 @@
 			</form>
 			
 			<!-- Displays the artists retrieved from the input -->
-			<div ng-show="artistsLeft.length > 0 && search == false && notAvailable == false" class="container">
+			<div ng-show="artists.length > 0 && search == false && notAvailable == false" class="container">
 				<h1>Click on an image to select the artist.</h1>
 				<div class="col-xs-12">
 					<li class="artistList" ng-repeat="artist in artists">
@@ -51,7 +51,7 @@
 				</div>
 				<div id="offsetDiv" class="col-xs-12">
 					<button class="btn btn-primary" type="submit" ng-show="number>19" ng-click="previous()">Previous</button>
-					<button class="btn btn-primary" type="submit" ng-show="artistsRight.length==10" ng-click="more()">Next</button>
+					<button class="btn btn-primary" type="submit" ng-show="artists.length==20" ng-click="more()">Next</button>
 					<button class="btn btn-primary" type="submit" ng-click="search = true">Back to Search</button>
 				</div>
 			</div>
