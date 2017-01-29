@@ -14,6 +14,7 @@ li {
 
 .artistList {
 	margin-top: 5em;
+	background-color: #e1e1e1;
 }
 
 .col-sm-3 {
@@ -23,15 +24,10 @@ li {
 .artistPic {
 	display: block;
 	max-height: 100px;
-	width: 100%;
 }
 
 #warning {
 	color: #f00;
-}
-
-img {
-	width: 50%;
 }
 
 .artistName {
