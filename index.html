@@ -46,7 +46,7 @@
 					<li class="artistList">
 						<img ng-show="{{artist.images[0]}}" id="{{artist.name}}" class="artistPic" ng-click="getTopSongs(artist.id)" src="{{artist.images[0].url}}"></img>
 						<img id="{{artist.name}}" class="artistPic" ng-show="{{artist.images[0] === undefined}}" ng-click="getTopSongs(artist.id)" src="img/No_Image_Available.png"></img>
-						<label for="{{artist.name}}" ng-click="getTopSongs(artist.id)" ng-model="name">{{artist.name}}</label>
+						<label for="{{artist.name}}" ng-click="getTopSongs(artist.id)" ng-model="name" id="artistName">{{artist.name}}</label>
 					</li>
 				</div>
 				<div id="offsetDiv" class="col-xs-12">
